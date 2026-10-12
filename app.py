@@ -1,90 +1,38 @@
-"""Chat interface for the sample FAQ retrieval assistant."""
-from __future__ import annotations
+from flask import Flask, render_template, request, jsonify
 
-from pathlib import Path
+app = Flask(__name__, static_folder="static", template_folder="templates")
 
-import streamlit as st
 
-from support_assistant.engine import FAQAssistant
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-PROJECT_ROOT = Path(__file__).resolve().parent
-FAQ_PATH = PROJECT_ROOT / "data" / "faqs.json"
 
-st.set_page_config(
-    page_title="Customer Support Assistant",
-    page_icon="💬",
-    layout="centered",
-)
+@app.route("/api/chat", methods=["POST"])
+def chat():
+    data = request.get_json(silent=True) or {}
+    message = str(data.get("message", "")).strip()
 
-st.markdown(
-    """
-    <style>
-      .block-container { max-width: 880px; padding-top: 2.5rem; }
-      [data-testid="stChatMessage"] { border-radius: 14px; }
-      .demo-note { padding: 0.85rem 1rem; border-left: 4px solid #75b798;
-                   background: rgba(117, 183, 152, 0.10); border-radius: 5px; }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+    if not message:
+        return jsonify({"reply": "Send me a message and I’ll try to help!"})
 
-st.title("💬 Customer Support Assistant")
-st.caption("A beginner-friendly FAQ assistant powered by text similarity.")
-st.markdown(
-    '<div class="demo-note"><strong>Demo knowledge base:</strong> '
-    "The included shop FAQs and policies are examples. Replace them with approved, "
-    "current support content before using this with customers.</div>",
-    unsafe_allow_html=True,
-)
+    lower = message.lower()
 
-try:
-    assistant = FAQAssistant.from_json(FAQ_PATH)
-except (OSError, ValueError) as exc:
-    st.error(f"Could not load the FAQ knowledge base: {exc}")
-    st.stop()
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-with st.sidebar:
-    st.subheader("About this demo")
-    st.write("Questions are matched to the closest FAQ with TF-IDF and cosine similarity.")
-    st.write("No external AI service or API key is used.")
-    st.caption("Similarity scores are not confidence probabilities.")
-    if st.button("Clear conversation", use_container_width=True):
-        st.session_state.messages = []
-        st.rerun()
-
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-        if message.get("match"):
-            st.caption(
-                f"Matched FAQ: {message['match']} · "
-                f"Text similarity: {message['score']:.0%} (not a probability)"
-            )
-        elif message["role"] == "assistant":
-            st.caption("No FAQ cleared the match threshold.")
-
-if not st.session_state.messages:
-    st.markdown("**Try a question**")
-    st.markdown(
-        "- How can I track my order?\n"
-        "- What is your return policy?\n"
-        "- How do I reset my password?"
-    )
-
-prompt = st.chat_input("Ask a question about the sample shop…", max_chars=500)
-if prompt:
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    result = assistant.answer(prompt)
-    assistant_message = {"role": "assistant", "content": result.answer}
-    if result.matched:
-        assistant_message["match"] = result.matched_question
-        assistant_message["score"] = result.score
+    if "order" in lower:
+        reply = "To track your order, visit the Orders page and enter your order number. If you’d like, I can walk you through it step by step."
+    elif "return" in lower or "refund" in lower:
+        reply = "Our return policy allows returns within 30 days of delivery for unused items in original packaging. I can share the full policy or help with a return request."
+    elif "account" in lower or "password" in lower or "email" in lower:
+        reply = "You can update your account details from the My Account section. If you’re locked out, we can help you reset your password securely."
+    elif "shipping" in lower or "delivery" in lower:
+        reply = "Most domestic orders ship within 2–5 business days. Tracking details are sent as soon as the order is dispatched."
+    elif "cancel" in lower:
+        reply = "Order cancellations are usually possible before fulfillment. If your order has already shipped, we can help you with the next steps."
     else:
-        assistant_message["score"] = result.score
-    st.session_state.messages.append(assistant_message)
-    st.rerun()
+        reply = f"I hear you: “{message}”. This is a demo support assistant, so I can help with common support topics like shipping, returns, tracking, and account updates."
+
+    return jsonify({"reply": reply})
 
 
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)

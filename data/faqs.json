@@ -1,0 +1,43 @@
+[
+  {
+    "question": "How can I track my order?",
+    "answer": "Sample answer: Use the tracking link in your order confirmation email. If you cannot find it, contact the support team with your order number.",
+    "keywords": ["track package shipment delivery tracking number order status where is my order"]
+  },
+  {
+    "question": "What is the return policy?",
+    "answer": "Sample answer: Demo items can be returned within 30 days of delivery if unused and in their original packaging. Contact support to start a return. Replace this example with your approved policy.",
+    "keywords": ["return exchange send back refund eligibility"]
+  },
+  {
+    "question": "When will I receive my refund?",
+    "answer": "Sample answer: After a return is approved, the demo refund may take 5–10 business days to appear, depending on the payment provider. Replace this example with your approved timeline.",
+    "keywords": ["money back credit refund status payment processing"]
+  },
+  {
+    "question": "How do I reset my password?",
+    "answer": "Sample answer: Choose “Forgot password” on the sign-in page and follow the instructions sent to your account email. Support can help if you no longer have access to that email.",
+    "keywords": ["login sign in change password account locked credentials"]
+  },
+  {
+    "question": "Which payment methods can I use?",
+    "answer": "Sample answer: The demo shop accepts major credit and debit cards. Replace this answer with the payment methods your organization actually supports.",
+    "keywords": ["pay payment card checkout credit debit methods"]
+  },
+  {
+    "question": "My item arrived damaged. What should I do?",
+    "answer": "Sample answer: Contact support with your order number and a description of the damage. Do not include payment card details in your message.",
+    "keywords": ["broken defective wrong item damaged delivery replacement"]
+  },
+  {
+    "question": "How can I contact a person on the support team?",
+    "answer": "Sample answer: Email support@example.com with your question and order number. Replace this placeholder with a monitored support address before sharing the demo.",
+    "keywords": ["human live agent representative contact customer service email"]
+  },
+  {
+    "question": "Can I change the delivery address after ordering?",
+    "answer": "Sample answer: Contact support as soon as possible with your order number. Address changes may not be possible after an order ships; confirm the real policy with your operations team.",
+    "keywords": ["edit update change shipping address delivery order"]
+  }
+]
+
